@@ -1,0 +1,30 @@
+{
+  "name":"axiom-base",
+  "description":"Base scripts for the Axiom environment.",
+  "version":"0.0.1",
+  "homepage":"http://github.com/TorchlightSoftware/axiom-base",
+  "repository":"git://github.com/TorchlightSoftware/axiom-base.git",
+  "author":"Torchlight Software <info@torchlightsoftware.com> (http://torchlightsoftware.com)",
+  "main":"./index.js",
+
+  "dependencies":{
+    "coffee-script":"*"
+  },
+  "devDependencies":{
+    "axiom":"*",
+    "mocha":"*",
+    "should":"*"
+  },
+  "engines":{
+    "node":">= 0.8.4"
+  },
+  "licenses":[
+    {
+      "type":"MIT",
+      "url":"http://github.com/torchlightsoftware/axiom-base/raw/master/LICENSE"
+    }
+  ],
+  "scripts": {
+    "test":"mocha"
+  }
+}
