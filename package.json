@@ -1,7 +1,7 @@
 {
   "name": "axiom-base",
   "description": "Base scripts for the Axiom environment.",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "homepage": "http://github.com/TorchlightSoftware/axiom-base",
   "repository": "git://github.com/TorchlightSoftware/axiom-base.git",
   "author": "Torchlight Software <info@torchlightsoftware.com> (http://torchlightsoftware.com)",

@@ -31,6 +31,24 @@ mods =
       "run/boot": identity
       "run/connect": identity
 
+  passthrough:
+    config:
+      run:
+        extends: 'server'
+    services:
+
+      "run/prepare": (args, done) ->
+        args.shared = {}
+        done null, args
+
+      "run/boot": (args, done) ->
+        args.shared.server = {}
+        done null, args
+
+      "run/connect": (args, done) ->
+        args.shared.server.connected = true
+        done null, args
+
 loadMod = (name) ->
   axiom.load name, mods[name]
 
@@ -60,8 +78,26 @@ describe 'runtime', ->
     # complete when all subtasks have been called
     cb = focus -> done()
 
-    axiom.listen "server.run/prepare", cb()
-    axiom.listen "server.run/boot", cb()
-    axiom.listen "server.run/connect", cb()
+    axiom.listen "server.run/prepare", "#", cb()
+    axiom.listen "server.run/boot", "#", cb()
+    axiom.listen "server.run/connect", "#", cb()
 
     axiom.send "server.run", {}
+
+  #it 'should pass variables to the next stage', (done) ->
+    #loadMod "server"
+    #loadMod "implementation"
+
+    ## When I send responses
+    #axiom.respond "server.run/prepare", (args, fin) ->
+      #fin null, {foo: 1}
+    #axiom.respond "server.run/boot", (args, fin) ->
+      #fin null, {bar: 2}
+
+    ## Then args should contain the merged responses
+    #axiom.respond "server.run/connect", (args, fin) ->
+      #should.exist args
+      #args.should.eql {foo: 1, bar: 2}
+      #done()
+
+    #axiom.send "server.run", {}

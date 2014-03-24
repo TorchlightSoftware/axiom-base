@@ -7,6 +7,9 @@ module.exports =
     runtime:
       required: ['moduleName', 'serviceName', 'config', 'args', 'axiom']
       service: ({moduleName, serviceName, config, args, axiom}, finished) ->
+
+        #{moduleName, serviceName, config, axiom} = @
+
         return done new Error "Invalid config - stages is required." unless config.stages
 
         # a helper to run the pipeline in series
