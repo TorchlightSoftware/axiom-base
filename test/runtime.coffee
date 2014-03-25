@@ -5,7 +5,6 @@ axiom = require 'axiom'
 axiom.config = {timeout: 20}
 
 logger = require 'torch'
-#axiom.bus.addWireTap logger.yellow
 
 
 identity = (args, done) -> done()
@@ -54,9 +53,10 @@ loadMod = (name) ->
 
 describe 'runtime', ->
 
-  beforeEach ->
-    axiom.reset()
-    loadMod 'base'
+  beforeEach (done) ->
+    axiom.reset ->
+      loadMod 'base'
+      done()
 
   it 'should complete if no stages are implemented', (done) ->
     loadMod "server"
@@ -71,18 +71,27 @@ describe 'runtime', ->
       should.not.exist err
       done()
 
-  it 'should call all stages', (done) ->
+  it 'should call stop on reset', (done) ->
+    #axiom.wireUpLoggers [{writer: 'console', level: 'debug'}]
     loadMod "server"
-    loadMod "implementation"
 
-    # complete when all subtasks have been called
-    cb = focus -> done()
+    # Given a disconnect service
+    disconnected = false
+    axiom.respond 'server.run/disconnect', (args, fin) ->
+      disconnected = true
+      fin()
 
-    axiom.listen "server.run/prepare", "#", cb()
-    axiom.listen "server.run/boot", "#", cb()
-    axiom.listen "server.run/connect", "#", cb()
+    # When I start the service
+    axiom.request "server.run", {}, (err) ->
+      should.not.exist err
 
-    axiom.send "server.run", {}
+      # And reset core
+      axiom.reset ->
+
+        # Then the disconnect service should run
+        disconnected.should.eql true
+        done()
+
 
   #it 'should pass variables to the next stage', (done) ->
     #loadMod "server"
